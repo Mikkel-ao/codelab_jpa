@@ -3,8 +3,10 @@ package app.daos;
 import app.entities.Student;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.Data;
 
 import java.util.List;
+
 
 public class StudentDAO {
     private final EntityManagerFactory emf;
@@ -17,30 +19,59 @@ public class StudentDAO {
         return emf.createEntityManager();
     }
 
-    public void createStudent(Student student) {
-        EntityManager em = getEntityManager();
-        try {
+    public Student createStudent(Student student) {
+        try (EntityManager em = getEntityManager()) {
             em.getTransaction().begin();
-
+            em.persist(student);
+            em.getTransaction().commit();
+            return student;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        em.getTransaction().commit();
-    } finally {
-        em.close();
     }
 
     public List<Student> findAll() {
-        return null;
+        try (EntityManager em = getEntityManager()) {
+            return em.createQuery("SELECT s FROM Student s", Student.class)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
     }
 
     public Student updateStudent(Student student) {
-        return null;
+        try (EntityManager em = getEntityManager()) {
+            em.getTransaction().begin();
+            Student updatedStudent = em.merge(student);
+            em.getTransaction().commit();
+            return updatedStudent;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean deleteById(int id) {
-        return false;
+        try (EntityManager em = getEntityManager()) {
+            em.getTransaction().begin();
+            Student student = em.find(Student.class, id);
+            if (student == null) {
+                System.out.println("Student with ID: " + id + " not found.");
+                em.getTransaction().rollback();
+                return false;
+            }
+            em.remove(student);
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public List<Student>findByCourseId(int courseId) {
-        return null;
+    public List<Student> findByCourseId(int courseId) {
+        return List.of(); // implement later
     }
 }
