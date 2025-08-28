@@ -42,7 +42,7 @@ public class Main {
         courses.forEach(System.out::println);
 
         // List all courses for a specific student
-        int studentId = students.get(0).getId(); // dynamically pick first student
+        int studentId = students.get(0).getId();
         List<Course> coursesByStudentId = courseDAO.findCoursesByStudentId(studentId);
         System.out.println("\nCourses for student: " + students.get(0).getName());
         coursesByStudentId.forEach(c -> System.out.println(c.getName() + " (ID: " + c.getId() + ")"));
