@@ -4,10 +4,14 @@ import app.entities.Student;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-
+@Getter
+@Setter
 public class StudentDAO {
     private final EntityManagerFactory emf;
 
@@ -72,6 +76,9 @@ public class StudentDAO {
     }
 
     public List<Student> findByCourseId(int courseId) {
-        return List.of(); // implement later
+        List<Student> students = findAll();
+        return students.stream()
+                .filter(s -> s.getCourseIds() != null && s.getCourseIds().contains(courseId))
+                .toList();
     }
 }

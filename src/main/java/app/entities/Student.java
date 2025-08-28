@@ -29,35 +29,8 @@ public class Student {
     LocalDate dateOfBirth;
     LocalDate dateOfEnrollment;
 
-
-
-    public static List<Student> getStudents() {
-        return List.of(
-                Student.builder()
-                        .name("Alice Johnson")
-                        .email("alice@example.com")
-                        .status(StudentStatus.ACTIVE)
-                        .dateOfBirth(LocalDate.of(2000, 5, 12))
-                        .dateOfEnrollment(LocalDate.now())
-                        .build(),
-
-                Student.builder()
-                        .name("Bob Smith")
-                        .email("bob@example.com")
-                        .status(StudentStatus.INACTIVE)
-                        .dateOfBirth(LocalDate.of(1998, 3, 8))
-                        .dateOfEnrollment(LocalDate.of(2016, 9, 1))
-                        .build(),
-
-                Student.builder()
-                        .name("Clara White")
-                        .email("clara@example.com")
-                        .status(StudentStatus.GRADUATED)
-                        .dateOfBirth(LocalDate.of(1995, 11, 20))
-                        .dateOfEnrollment(LocalDate.of(2014, 9, 1))
-                        .build()
-        );
-    }
-
+    @ToString.Exclude
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Integer> courseIds;
 
 }

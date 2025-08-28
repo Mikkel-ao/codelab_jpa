@@ -27,33 +27,6 @@ public class Course {
     private String classroom;
 
 
-    private String timeOfCourse() {
-        return null;
-    }
-
-    public static List<Course> getCourses() {
-        return List.of(
-                Course.builder()
-                        .name("Mathematics 101")
-                        .teacher("Dr. Smith")
-                        .semester("Fall 2023")
-                        .classroom("Room A1")
-                        .build(),
-
-                Course.builder()
-                        .name("Computer Science 201")
-                        .teacher("Prof. Johnson")
-                        .semester("Spring 2024")
-                        .classroom("Lab B2")
-                        .build(),
-
-                Course.builder()
-                        .name("History 150")
-                        .teacher("Dr. White")
-                        .semester("Fall 2023")
-                        .classroom("Room C3")
-                        .build()
-        );
-    }
+    private String timeOfCourse;
 
 }

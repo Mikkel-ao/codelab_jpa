@@ -6,26 +6,23 @@ import app.daos.StudentDAO;
 import app.entities.Course;
 import app.entities.Student;
 import app.enums.StudentStatus;
+import app.loader.DataLoader;
 import jakarta.persistence.EntityManagerFactory;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-
-import static app.entities.Course.getCourses;
-import static app.entities.Student.getStudents;
 
 public class Main {
     public static void main(String[] args) {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+
         StudentDAO studentDAO = new StudentDAO(emf);
         CourseDAO courseDAO = new CourseDAO(emf);
 
-        List<Student> students = getStudents();
-        students.forEach(studentDAO::createStudent);
+        DataLoader dataLoader = new DataLoader(emf);
+        dataLoader.loadData();
 
-        List<Course> courses = getCourses();
-        courses.forEach(courseDAO::createCourse);
+        List<Student> students = studentDAO.findAll();
+        List<Course> courses = courseDAO.findAll();
 
         Student studentToUpdate = students.get(0);
         studentToUpdate.setStatus(StudentStatus.SUSPENDED);
@@ -38,11 +35,24 @@ public class Main {
         studentDAO.deleteById(2);
         courseDAO.deleteById(2);
 
-        studentDAO.findAll().forEach(System.out::println);
-        courseDAO.findAll().forEach(System.out::println);
+        System.out.println("All students:");
+        students.forEach(System.out::println);
+
+        System.out.println("All courses:");
+        courses.forEach(System.out::println);
+
+        // List all courses for a specific student
+        int studentId = students.get(0).getId(); // dynamically pick first student
+        List<Course> coursesByStudentId = courseDAO.findCoursesByStudentId(studentId);
+        System.out.println("\nCourses for student: " + students.get(0).getName());
+        coursesByStudentId.forEach(c -> System.out.println(c.getName() + " (ID: " + c.getId() + ")"));
+
+        // List all students for a specific course
+        int targetCourseId = courses.get(0).getId(); // dynamically pick first course
+        List<Student> studentsInCourse = studentDAO.findByCourseId(targetCourseId);
+        System.out.println("\nStudents enrolled in course: " + courses.get(0).getName());
+        studentsInCourse.forEach(s -> System.out.println(s.getName() + " (ID: " + s.getId() + ")"));
 
         emf.close();
-
-
     }
 }

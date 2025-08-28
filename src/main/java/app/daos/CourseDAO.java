@@ -1,11 +1,16 @@
 package app.daos;
 
 import app.entities.Course;
+import app.entities.Student;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class CourseDAO {
     private final EntityManagerFactory emf;
 
@@ -77,4 +82,22 @@ public class CourseDAO {
             return false;
         }
     }
+
+    public List<Course> findCoursesByStudentId(int studentId) {
+        try (EntityManager em = getEntityManager()) {
+            Student student = em.find(Student.class, studentId);
+            if (student == null || student.getCourseIds() == null || student.getCourseIds().isEmpty()) {
+                return List.of();
+            }
+            return em.createQuery(
+                    "SELECT c FROM Course c WHERE c.id IN :ids", Course.class)
+                    .setParameter("ids", student.getCourseIds())
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
+
+
 }
